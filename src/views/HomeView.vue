@@ -1,7 +1,12 @@
 <template>
   <div class="home" style="display: flex; justify-content: center; align-items: center">
     <Card style="width: 400px; margin: 0 auto;">
-      <template #title> ИМЯ!! питается сегодня в школе? <br> ДАТА!!!
+      <template #title> 
+        <div>ДАТА!!!</div>
+        !!ИМЯ!!
+        <span v-if="!value">сегодня питается в школе ?</span>
+        <span v-else :style="`color: ${color}`">{{value}}</span>
+        <br> 
       </template>
       <template #subtitle> Выберите один из вариантов </template>
       <template #content>
@@ -26,6 +31,8 @@
             </div>
           </div>
           <Button type="submit" label="Отправить" style="margin-top: 40px;"/>
+          <p style="text-decoration: underline;"><b>Чтобы изменения применились, не забудьте отправить решение</b></p>
+          <p>Дата последней отправки ДДДМММГГГ</p>
         </form>
         <Toast />
       </template>
@@ -35,7 +42,7 @@
 </template>
 
 <script setup lang="js">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import { useToast } from 'primevue/usetoast';
 import { useField, useForm } from 'vee-validate';
@@ -45,7 +52,15 @@ const { value, errorMessage } = useField('value', validateField);
 const toast = useToast();
 
 const options = ref(['Питается', 'Не питается']);
-
+const color = computed(() => {
+  switch (value.value) {
+    case 'Всегда питается': return 'green'
+    case 'Питается': return 'green'
+    case 'Всегда не питается': return 'red'
+    case 'Не питается': return 'red'
+    case 'Болеет': return 'blue'
+  }
+})
 function validateField(value) {
   if (!value) {
     return 'Перед отправкой выберите решение';
